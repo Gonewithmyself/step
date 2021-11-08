@@ -93,3 +93,58 @@ func (c Currancy) Change(amt int) {
 		}
 	}
 }
+
+type interval struct {
+	start int
+	end   int
+}
+type IntervalCover struct {
+	intervals []interval
+}
+
+func newInternalCover() *IntervalCover {
+	ic := IntervalCover{
+		intervals: make([]interval, rand.Intn(5)+3),
+	}
+
+	for i := 0; i < len(ic.intervals); i++ {
+		end := rand.Intn(20-2) + 2
+		start := rand.Intn(end)
+		ic.intervals[i] = interval{start: start, end: end}
+	}
+
+	sort.Slice(ic.intervals, func(i, j int) bool {
+		if ic.intervals[i].start < ic.intervals[j].start {
+			return true
+		}
+
+		return ic.intervals[i].start == ic.intervals[j].start &&
+			ic.intervals[i].end <= ic.intervals[j].end
+
+	})
+	return &ic
+}
+
+func (ic IntervalCover) nonIntersection() []interval {
+	ui := []interval{}
+	for i := range ic.intervals {
+		curr := ic.intervals[i]
+
+		if len(ui) == 0 {
+			ui = append(ui, curr)
+			continue
+		}
+
+		idx := len(ui) - 1
+		prev := ui[idx]
+		if curr.start >= prev.end {
+			ui = append(ui, curr)
+			continue
+		}
+
+		if curr.end < prev.end {
+			ui[idx] = curr
+		}
+	}
+	return ui
+}

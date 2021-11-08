@@ -22,3 +22,15 @@ func TestCurrancy_Change(t *testing.T) {
 	t.Log(c, amt)
 	c.Change(amt)
 }
+
+func Test_newInternalCover(t *testing.T) {
+	tc := newInternalCover()
+	ni := tc.nonIntersection()
+	t.Log(tc, ni)
+
+	tc = &IntervalCover{
+		intervals: []interval{{1, 5}, {2, 4}, {3, 5}, {5, 9}, {6, 8}, {8, 10}},
+	}
+	ni = tc.nonIntersection()
+	t.Log(tc, ni)
+}
