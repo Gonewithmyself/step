@@ -1,0 +1,3 @@
+package dspattn
+
+// sync.Once
