@@ -3,14 +3,17 @@ package backtrack
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func Test_newNQueen(t *testing.T) {
 	nq := newNQueen()
-	t.Log(nq)
+	// t.Log(nq)
 
-	// nq.placeQueenTp()
-	t.Log(nq)
+	nq.placeQueenTplt()
+
+	t.Log(len(nq.res), len(nq.res2), "11"[1:1])
+	// t.Log(nq)
 }
 
 func Test_packet(t *testing.T) {
@@ -60,4 +63,12 @@ func Test_subsetswithsubs(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_rematch(t *testing.T) {
+	re := newReMatch("a*b*")
+
+	time.Sleep(time.Second)
+	re.matchAll("aaaabbb")
+	t.Log(re.res)
 }

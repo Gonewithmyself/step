@@ -11,6 +11,7 @@ type nQueen struct {
 	n          int
 	chessboard []int
 	res        [][]int
+	res2       [][]int
 }
 
 func newNQueen() *nQueen {
@@ -40,7 +41,6 @@ func (nq *nQueen) placeQueen(row int) {
 }
 
 func (nq *nQueen) placeQueenTplt() {
-	nq.res = nil
 	list := make([]int, len(nq.chessboard))
 	nq.placeQueenTpltBacktrace(0, list)
 }
@@ -49,7 +49,7 @@ func (nq *nQueen) placeQueenTpltBacktrace(row int, list []int) {
 	if row == nq.n {
 		board := make([]int, nq.n)
 		copy(board, list)
-		nq.res = append(nq.res, board)
+		nq.res2 = append(nq.res2, board)
 	}
 
 	for col := 0; col < nq.n; col++ {
@@ -191,6 +191,8 @@ func (pt *packet) String() string {
 type rematch struct {
 	patt   string
 	matchd bool
+
+	res []string
 }
 
 func newReMatch(patt string) *rematch {
@@ -229,6 +231,38 @@ func (re *rematch) doMatch(i, j, n int, src string) {
 	case re.patt[j] == src[i] &&
 		i < n:
 		re.doMatch(i+1, j+1, n, src)
+	}
+}
+
+func (re *rematch) matchAll(src string) {
+	re.matchd = false
+	re.matchBacktrace(src, 0, 0, "")
+	return
+}
+
+func (re *rematch) matchBacktrace(src string, pos, j int, sub string) {
+	if j == len(re.patt) {
+		re.res = append(re.res, sub)
+		return
+	}
+
+	if pos == len(src) {
+		return
+	}
+
+	switch {
+	case re.patt[j] == '*':
+		for k := 0; k < len(src)-pos; k++ {
+			re.matchBacktrace(src, pos+k, j+1, sub+src[pos:pos+k])
+		}
+
+	case re.patt[j] == '?':
+		re.matchBacktrace(src, pos, j+1, sub)
+		re.matchBacktrace(src, pos+1, j+1, sub+src[pos:pos+1])
+
+	case re.patt[j] == src[pos] &&
+		pos < len(src):
+		re.matchBacktrace(src, pos+1, j+1, sub+src[pos:pos+1])
 	}
 }
 
