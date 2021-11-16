@@ -11,6 +11,7 @@ import (
 func Test_Sort(t *testing.T) {
 	fns := []func([]int){
 		insertSort,
+		bubbleSort,
 	}
 
 	for i := 0; i < 10; i++ {
@@ -34,7 +35,7 @@ func wrappSort(arr []int, fn func(arr []int)) int64 {
 }
 
 func genarray() []int {
-	n := rand.Intn(5000) + 3000
+	n := rand.Intn(10) + 3
 	arr := make([]int, n)
 	for i := range arr {
 		arr[i] = rand.Intn(1000)

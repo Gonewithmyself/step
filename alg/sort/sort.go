@@ -12,3 +12,22 @@ func insertSort(s []int) {
 		}
 	}
 }
+
+func bubbleSort(s []int) {
+	for i := 0; i < len(s); i++ {
+		maxIdx := len(s) - i - 1
+		for j := 0; j < len(s)-i-1; j++ {
+			if s[j] > s[maxIdx] {
+				maxIdx = j
+			}
+		}
+
+		if maxIdx != len(s)-i-1 {
+			s[maxIdx], s[len(s)-i-1] = s[len(s)-i-1], s[maxIdx]
+		}
+	}
+}
+
+func quickSort(s []int) {
+
+}
