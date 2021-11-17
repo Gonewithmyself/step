@@ -32,8 +32,8 @@ func (r *road) search() int {
 	for i := 0; i < len(r.pmap); i++ {
 		for j := 0; j < len(r.pmap[0]); j++ {
 			var (
-				up   = math.MaxInt
-				left = math.MaxInt
+				up   = math.MaxInt64
+				left = math.MaxInt64
 			)
 
 			if i-1 >= 0 {
@@ -49,7 +49,7 @@ func (r *road) search() int {
 				min = left
 			}
 
-			if min == math.MaxInt {
+			if min == math.MaxInt64 {
 				min = 0
 			}
 
