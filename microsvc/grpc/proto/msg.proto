@@ -1,0 +1,24 @@
+syntax = "proto3";
+package proto;
+
+message Query {
+  int32 id = 1;
+  string word = 2;
+}
+
+message None {}
+
+message Result { string mean = 1; }
+
+message Metric {
+  int32 Mem = 1;
+  int64 Ts = 2;
+}
+
+message Msg {
+  int32 From = 1;
+  int32 To = 2;
+  string Content = 3;
+  int64 Ts = 4;
+  repeated int32 Onlines = 5;
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package proto;
+
+import "msg.proto";
+
+service Monster {
+  rpc Translate(Query) returns (Result);
+  rpc PullMetrics(Query) returns (stream Metric);
+  rpc PushMetrics(stream Metric) returns (None);
+  rpc Chat(stream Msg) returns (stream Msg);
+}
