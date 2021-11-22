@@ -12,6 +12,9 @@ func Test_Sort(t *testing.T) {
 	fns := []func([]int){
 		insertSort,
 		bubbleSort,
+		quickSort,
+		quickSortTwoPointer,
+		mergeSort,
 	}
 
 	for i := 0; i < 10; i++ {
@@ -21,9 +24,10 @@ func Test_Sort(t *testing.T) {
 			copy(tosort, arr)
 			cost := wrappSort(tosort, fns[j])
 			if !sort.IntsAreSorted(tosort) {
-				t.Error(reflect.TypeOf(fns[j]).Name())
+				t.Error(j, reflect.TypeOf(fns[j]).Name())
 			}
-			t.Log(reflect.TypeOf(fns[j]).Name(), cost, len(tosort))
+			_ = cost
+			// t.Log(reflect.TypeOf(fns[j]).Name(), cost, len(tosort))
 		}
 	}
 }
@@ -45,4 +49,22 @@ func genarray() []int {
 
 func init() {
 	rand.Seed(time.Now().Unix())
+}
+
+func Test_qsort(t *testing.T) {
+	mergeSort([]int{8, 10, 2, 3, 6, 1, 5})
+}
+
+func BenchmarkQsort(b *testing.B) {
+	src := []int{8, 10, 2, 3, 6, 1, 5}
+	for i := 0; i < b.N; i++ {
+		quickSort(src)
+	}
+}
+
+func BenchmarkQsortTwo(b *testing.B) {
+	src := []int{8, 10, 2, 3, 6, 1, 5}
+	for i := 0; i < b.N; i++ {
+		quickSortTwoPointer(src)
+	}
 }
