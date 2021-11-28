@@ -15,6 +15,8 @@ func Test_Sort(t *testing.T) {
 		quickSort,
 		quickSortTwoPointer,
 		mergeSort,
+		heapSort,
+		countSort,
 	}
 
 	for i := 0; i < 10; i++ {
@@ -52,7 +54,9 @@ func init() {
 }
 
 func Test_qsort(t *testing.T) {
-	mergeSort([]int{8, 10, 2, 3, 6, 1, 5})
+	src := []int{8, 10, 2, 3, 6, 1, 5}
+	countSort(src)
+	t.Log(src)
 }
 
 func BenchmarkQsort(b *testing.B) {

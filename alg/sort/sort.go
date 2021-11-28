@@ -1,5 +1,7 @@
 package sort
 
+import "math"
+
 func insertSort(s []int) {
 	for i := 1; i < len(s); i++ {
 		for j := i; j >= 1; j-- {
@@ -160,5 +162,63 @@ func merge(s []int, start, mid, end int) {
 }
 
 func heapSort(s []int) {
+	n := len(s)
+	for i := (n - 2) / 2; i >= 0; i-- {
+		adjustDown(s, i, n)
+	}
 
+	for i := 0; i < n; i++ {
+		s[0], s[n-i-1] = s[n-i-1], s[0]
+		adjustDown(s, 0, n-i-1)
+	}
+}
+
+func adjustDown(s []int, i, n int) {
+	parent := i
+	child := 2*parent + 1
+	x := s[parent]
+	for child < n {
+		if child+1 < n && s[child+1] > s[child] {
+			child++
+		}
+
+		if s[child] <= x {
+			break
+		}
+
+		s[parent] = s[child]
+		parent = child
+		child = 2*parent + 1
+	}
+	s[parent] = x
+}
+
+func countSort(s []int) {
+	var (
+		max = math.MinInt64
+		min = math.MaxInt64
+	)
+	for i := range s {
+		if s[i] > max {
+			max = s[i]
+		}
+
+		if s[i] < min {
+			min = s[i]
+		}
+	}
+
+	n := max - min + 1
+	m := make([]int, n)
+	for i := range s {
+		m[s[i]-min]++
+	}
+
+	i := 0
+	for j := range m {
+		for k := m[j]; k > 0; k-- {
+			s[i] = j + min
+			i++
+		}
+	}
 }
