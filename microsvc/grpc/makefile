@@ -1,5 +1,6 @@
 
 cmd=one
+# pull push chat mchat
 .PHONY:pb
 pb:
 	cd proto && protoc -I . --go_out=plugins=grpc:. *.proto

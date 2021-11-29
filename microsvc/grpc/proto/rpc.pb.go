@@ -27,7 +27,7 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 157 bytes of a gzipped FileDescriptorProto
+	// 175 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2c, 0x2a, 0x48, 0xd6,
 	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x53, 0x52, 0x9c, 0xb9, 0xc5, 0xe9, 0x10, 0x11,
 	0xa3, 0x4d, 0x8c, 0x5c, 0xec, 0xbe, 0xf9, 0x79, 0xc5, 0x25, 0xa9, 0x45, 0x42, 0x1a, 0x5c, 0x9c,
@@ -36,8 +36,9 @@ var fileDescriptor_77a6da22d6a3feb1 = []byte{
 	0x77, 0x40, 0x69, 0x4e, 0x8e, 0x6f, 0x6a, 0x49, 0x51, 0x66, 0x72, 0x31, 0x0e, 0xb5, 0x10, 0x59,
 	0x03, 0x46, 0x21, 0x6d, 0x90, 0xea, 0xe2, 0x0c, 0x98, 0x6a, 0x54, 0x79, 0x29, 0x6e, 0x28, 0xd7,
 	0x2f, 0x3f, 0x2f, 0x55, 0x83, 0x51, 0x48, 0x89, 0x8b, 0xc5, 0x39, 0x23, 0xb1, 0x44, 0x88, 0x0b,
-	0xa6, 0xaa, 0x38, 0x5d, 0x0a, 0x89, 0xad, 0xc1, 0x68, 0xc0, 0x98, 0xc4, 0x06, 0xe6, 0x1a, 0x03,
-	0x02, 0x00, 0x00, 0xff, 0xff, 0x1f, 0x58, 0x13, 0x8d, 0xda, 0x00, 0x00, 0x00,
+	0xa6, 0xaa, 0x38, 0x5d, 0x0a, 0x89, 0xad, 0xc1, 0x68, 0xc0, 0x68, 0xa4, 0xcd, 0xc5, 0xea, 0x91,
+	0x9a, 0x93, 0x93, 0x2f, 0xa4, 0xc4, 0xc5, 0x1c, 0x9c, 0x58, 0x89, 0xd7, 0xad, 0x49, 0x6c, 0x60,
+	0x9e, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x09, 0xe3, 0x00, 0x63, 0x07, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -319,5 +320,77 @@ var _Monster_serviceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
+	Metadata: "rpc.proto",
+}
+
+// HelloClient is the client API for Hello service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type HelloClient interface {
+	Say(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
+}
+
+type helloClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewHelloClient(cc *grpc.ClientConn) HelloClient {
+	return &helloClient{cc}
+}
+
+func (c *helloClient) Say(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/proto.Hello/Say", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// HelloServer is the server API for Hello service.
+type HelloServer interface {
+	Say(context.Context, *Query) (*Result, error)
+}
+
+// UnimplementedHelloServer can be embedded to have forward compatible implementations.
+type UnimplementedHelloServer struct {
+}
+
+func (*UnimplementedHelloServer) Say(ctx context.Context, req *Query) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Say not implemented")
+}
+
+func RegisterHelloServer(s *grpc.Server, srv HelloServer) {
+	s.RegisterService(&_Hello_serviceDesc, srv)
+}
+
+func _Hello_Say_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServer).Say(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Hello/Say",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServer).Say(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Hello_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.Hello",
+	HandlerType: (*HelloServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Say",
+			Handler:    _Hello_Say_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "rpc.proto",
 }

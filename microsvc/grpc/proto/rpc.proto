@@ -10,3 +10,7 @@ service Monster {
   rpc PushMetrics(stream Metric) returns (None);
   rpc Chat(stream Msg) returns (stream Msg);
 }
+
+service Hello {
+  rpc Say(Query) returns (Result);
+}

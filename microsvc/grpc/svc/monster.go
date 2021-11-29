@@ -114,7 +114,7 @@ func (mst *monster) Chat(srv proto.Monster_ChatServer) error {
 	mst.telOnlines(srv)
 
 	stk := [1024]byte{}
-	runtime.Stack(stk[:], false)
+	// runtime.Stack(stk[:], false)
 	log.Printf("recv  %s \n", stk)
 
 	mst.add(msg.From, srv)

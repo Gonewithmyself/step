@@ -14,13 +14,18 @@ func main() {
 		panic(err)
 	}
 
-	svr := grpc.NewServer()
+	svr := grpc.NewServer(
+		grpc.UnaryInterceptor(unaryInterceptor),
+		grpc.StreamInterceptor(streamInterceptor),
+	)
 
 	proto.RegisterMonsterServer(svr, &monster{
 		chatroom: chatroom{
 			conns: map[int32]proto.Monster_ChatServer{},
 		},
 	})
+
+	proto.RegisterHelloServer(svr, &hello{})
 
 	svr.Serve(ln)
 }

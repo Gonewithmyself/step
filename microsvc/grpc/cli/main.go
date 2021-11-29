@@ -16,12 +16,15 @@ import (
 
 type client struct {
 	proto.MonsterClient
+	proto.HelloClient
 }
 
 func (c *client) run(cmd string) {
 	switch cmd {
 	case "one":
 		c.one()
+	case "hello":
+		c.hello()
 	case "pull":
 		c.pull()
 
@@ -45,6 +48,11 @@ func (c *client) one() {
 		Id: int32(id),
 	})
 
+	log.Println(res, er)
+}
+
+func (c *client) hello() {
+	res, er := c.Say(context.Background(), &proto.Query{})
 	log.Println(res, er)
 }
 
@@ -174,8 +182,8 @@ func main() {
 	}
 	defer conn.Close()
 
-	cli := proto.NewMonsterClient(conn)
-	c = &client{cli}
+	c = &client{MonsterClient: proto.NewMonsterClient(conn),
+		HelloClient: proto.NewHelloClient(conn)}
 
 	cmd := ""
 	flag.StringVar(&cmd, "cmd", "one", "specify cmd")
