@@ -4,3 +4,4 @@
 *.exe
 app
 .vscode
+*.prof
