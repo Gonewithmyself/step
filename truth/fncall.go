@@ -11,7 +11,9 @@ func Sub(x, y int) int {
 	return x - y
 }
 
-func A(x, y int) int {
-	z := Add(x, y)
-	return Sub(z, y)
+func A(x, y int) (w, z int) {
+	c := Add(x, y)
+	z = Add(x, c)
+	w = Sub(x, y)
+	return
 }
