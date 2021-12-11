@@ -1,8 +1,10 @@
 package skiplist
 
 import (
+	"fmt"
 	"math"
 	"step/misc/randtools"
+	"strings"
 )
 
 type skiplist struct {
@@ -67,12 +69,49 @@ func (s *skiplist) insert(score int, val interface{}) *node {
 		data:     val,
 		forwards: make([]*node, lv),
 	}
+	s.len++
 
 	for i := 0; i < lv; i++ {
 		n.forwards[i] = path[i].forwards[i]
 		path[i].forwards[i] = n
 	}
 	return n
+}
+
+func (s *skiplist) String() string {
+	var buf strings.Builder
+	buf.WriteString(fmt.Sprintf("lv(%v) len(%v) nodes:",
+		s.lv, s.len))
+
+	cur := s.head
+	m := make(map[int]int)
+	for cur.forwards[0] != nil {
+		lv := 0
+		for i := 0; i < s.lv; i++ {
+			if i == len(cur.forwards) ||
+				cur.forwards[i] == nil {
+				break
+			}
+
+			if cur.forwards[i].score != cur.forwards[0].score {
+				m[cur.forwards[i].score] = i + 1
+				continue
+			}
+
+			lv++
+		}
+		cur = cur.forwards[0]
+		if x, ok := m[cur.score]; ok {
+			lv = x
+		}
+		fx := " "
+		if lv != 1 {
+			fx = "*"
+		}
+		buf.WriteString(fmt.Sprintf("%v,%v%v ", cur.score, lv, fx))
+	}
+
+	return buf.String()
 }
 
 func (s *skiplist) delete(score int) *node {
@@ -86,10 +125,11 @@ func (s *skiplist) delete(score int) *node {
 	}
 
 	cur = cur.forwards[0]
-	if cur != nil && cur.score == score {
+	if cur == nil || cur.score != score {
 		return nil
 	}
 
+	s.len--
 	for i := 0; i < s.lv; i++ {
 		if path[i].forwards[i] != cur {
 			return nil
