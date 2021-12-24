@@ -1,14 +1,27 @@
 package main
 
-import (
-	"fmt"
-	"unsafe"
-)
+import "sync"
+
+func TestAppend() (result []int) {
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		v := i
+		wg.Add(1)
+		go func() {
+			// other logic
+			result = append(result, v)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+	//fmt.Printf("%v\n", len(result))
+	return result
+}
 
 func main() {
-	buf := make([]byte, 10240)
-	base := 824633720832
-	start := uintptr(unsafe.Pointer(&buf[0]))
-	fmt.Printf("%d diff %d \n", &buf[0], (start-uintptr(base))/1024)
-	// time.Sleep(time.Minute)
+	for a := 0; a < 100000; a++ {
+		res := TestAppend()
+		println("len(res):", len(res))
+	}
 }

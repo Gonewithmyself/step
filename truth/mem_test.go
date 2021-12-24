@@ -69,6 +69,13 @@ func TestArena(t *testing.T) {
 
 }
 
+const maxAlloc = (1 << heapAddrBits) - (1-_64bit)*1
+
+func TestMaxAlloc(t *testing.T) {
+
+	t.Log(maxAlloc, maxAlloc/1024/1024/1024/1024, roundupsize(17))
+}
+
 func TestSummarize(t *testing.T) {
 	var p pallocBits
 
@@ -202,4 +209,8 @@ func arenahint() {
 		n++
 	}
 	fmt.Println(n)
+}
+
+func BenchmarkSlice(b *testing.B) {
+
 }
