@@ -18,6 +18,29 @@ type pageAlloc struct {
 	inUse      addrRanges
 	chunks     [1 << pallocChunksL1Bits]*[1 << pallocChunksL2Bits]pallocData
 	searchAddr offAddr
+	scav       struct {
+		// inUse is a slice of ranges of address space which have not
+		// yet been looked at by the scavenger.
+		inUse addrRanges
+
+		// gen is the scavenge generation number.
+		gen uint32
+
+		// reservationBytes is how large of a reservation should be made
+		// in bytes of address space for each scavenge iteration.
+		reservationBytes uintptr
+
+		// released is the amount of memory released this generation.
+		released uintptr
+
+		// scavLWM is the lowest (offset) address that the scavenger reached this
+		// scavenge generation.
+		scavLWM offAddr
+
+		// freeHWM is the highest (offset) address of a page that was freed to
+		// the page allocator this scavenge generation.
+		freeHWM offAddr
+	}
 }
 
 type pallocData struct {
@@ -254,6 +277,7 @@ func (p *pageAlloc) init() {
 	p.sysInit()
 
 	p.searchAddr = maxSearchAddr
+	p.scav.scavLWM = maxSearchAddr
 }
 
 func (p *pageAlloc) sysGrow(base, limit uintptr) {

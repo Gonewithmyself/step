@@ -19,12 +19,22 @@ func TestPageAlloc(t *testing.T) {
 
 	// 33751040 33751048 824633720832
 	var base uintptr = 0
-	var size uintptr = chunkBytes * 4
+	var size uintptr = chunkBytes * 2
 	p.grow(base, size) // 往树里装n个trunk的内存
 
-	p.alloc(1) // 分配x页
+	var pages uintptr = 1
+	addr, scav := p.alloc(pages) // 分配x页
+	t.Log(addr, scav)
+
+	p.free(addr, pages)
+
+	p.scavenge(physPageSize, true)
+
+	addr, scav = p.alloc(pages) // 分配x页
+	t.Log(addr, scav)
 
 	// p.update()
+
 }
 
 func TestGetPageSize(t *testing.T) {

@@ -2,52 +2,40 @@ package main
 
 import (
 	"fmt"
-	"reflect"
-	"strings"
+	"runtime/debug"
+	"time"
 )
 
 func main() {
-	sd := newSdesc(&orderVo{})
-	sd.genProto()
-}
+	fmt.Println("start.", debug.SetGCPercent(100))
 
-type sdesc struct {
-	name string
-	fds  []*reflect.StructField
-}
+	container := make([][]byte, 0, 8)
+	fmt.Println("> loop.")
+	for i := 0; ; i++ {
+		if len(container) < 32 {
+			container = append(container, make([]byte, (1<<20)*4))
+		} else {
+			tp := make([][]byte, len(container)-1)
+			copy(tp, container)
+			container = tp
+		}
 
-func (sd *sdesc) genProto() {
-	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("message %v { \n", sd.name))
-	for i, fd := range sd.fds {
-		buf.WriteString(fmt.Sprintf(" %v %v = %v;\n", fd.Type, firstLower(fd.Name), i+1))
-	}
-	buf.WriteString("}\n")
-	fmt.Println(buf.String())
-}
-
-func firstLower(s string) string {
-	return strings.ToLower(s[0:1]) + s[1:]
-}
-
-func newSdesc(v interface{}) *sdesc {
-	vv := reflect.ValueOf(v)
-	if vv.Kind() == reflect.Ptr {
-		vv = vv.Elem()
+		time.Sleep(time.Microsecond * 100)
 	}
 
-	if vv.Kind() != reflect.Struct {
-		panic(vv.Kind())
-	}
+	// for i := 0; i < 10; i++ {
+	// 	runtime.GC()
+	// }
+	fmt.Println("< loop.")
+}
 
-	sd := &sdesc{}
-	ty := vv.Type()
-	sd.name = ty.Name()
-	n := ty.NumField()
-	sd.fds = make([]*reflect.StructField, n)
-	for i := 0; i < n; i++ {
-		fd := ty.Field(i)
-		sd.fds[i] = &fd
-	}
-	return sd
+func getgoal(last, start, end, goal float32) {
+	goalrate := goal/last - 1
+	triggerrate := start/last - 1
+	realrate := end/last - 1
+	delta := (goal - start) - (end - start)
+	deltarate := (goalrate - triggerrate) - (realrate - triggerrate)
+	nxrate := triggerrate + deltarate*0.5
+	nxgoal := goal * 2
+	fmt.Println(delta, deltarate, nxrate, nxgoal, nxgoal*nxrate)
 }

@@ -12,17 +12,6 @@ import (
 )
 
 func main() {
-
-	syncMap()
-	return
-
-	a := [5]int{1, 2, 3, 4, 5}
-
-	// create slice from array
-	t := a[:3:3]
-	fmt.Println(t, cap(t))
-	testPage()
-	return
 	db, err := bolt.Open("my.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)

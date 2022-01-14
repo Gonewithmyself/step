@@ -1,6 +1,7 @@
 package mem
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 )
@@ -117,6 +118,7 @@ func (p *pageAlloc) allocRange(base, npages uintptr) uintptr {
 		chunk := p.chunkOf(sc)
 		scav += chunk.scavenged.popcntRange(si, ei+1-si)
 		chunk.allocRange(si, ei+1-si)
+		fmt.Println("chunkxxx, ", sc, ei+1-si)
 	} else {
 		// The range crosses at least one chunk boundary.
 		chunk := p.chunkOf(sc)

@@ -1,6 +1,8 @@
 package main
 
-import "sync"
+import (
+	"sync"
+)
 
 func TestAppend() (result []int) {
 	var wg sync.WaitGroup
@@ -17,6 +19,19 @@ func TestAppend() (result []int) {
 	wg.Wait()
 	//fmt.Printf("%v\n", len(result))
 	return result
+}
+
+type baseInfo struct {
+	head int32
+	lv   int32
+}
+type user struct {
+	id   int64
+	base *baseInfo
+}
+type player struct {
+	id   int64
+	base baseInfo
 }
 
 func main() {
